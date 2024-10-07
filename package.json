@@ -1,0 +1,25 @@
+{
+	"name": "@sane/core",
+	"description": "Opinionated MVC Framework for building quickly",
+	"author": "Alex Podikoglou <alex.podikoglou@gmail.com>",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/podikoglou/sane.git"
+	},
+	"bugs": {
+		"url": "https://github.com/podikoglou/sane/issues"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.3",
+		"typescript": "^5.0.0"
+	},
+	"files": ["dist"],
+	"type": "module",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "tsc",
+		"ci": "npm run build",
+		"check": "biome check --write src/"
+	}
+}
