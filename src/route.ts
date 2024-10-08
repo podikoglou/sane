@@ -19,3 +19,9 @@ export type PostRoute = Route & { method: "POST" };
 export function post(path: string, action: Action): PostRoute {
   return { path, action, method: "POST" };
 }
+
+export type PutRoute = Route & { method: "PUT" };
+
+export function put(path: string, action: Action): PutRoute {
+  return { path, action, method: "PUT" };
+}
