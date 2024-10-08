@@ -1,9 +1,28 @@
+import {
+  createApplication,
+  createHandler,
+  get,
+  post,
+  put,
+} from "../src/index.js";
 import home from "./controllers/home.js";
-import { createApplication, createHandler, get } from "../src/index.js";
+import products from "./controllers/products.js";
 
 const application = createApplication({
   routes: () => {
-    return [get("/", home.actions.index)];
+    return [
+      get("/", home.actions.index),
+
+      get("/products", products.actions.index),
+      get("/products/new", products.actions.new),
+      get("/products/:id", products.actions.show),
+      get("/products/:id/edit", products.actions.edit),
+
+      post("/products", products.actions.create),
+      put("/products/:id", products.actions.update),
+      // ????
+      // delete("/products/:id", products.actions.destroy),
+    ];
   },
 });
 
