@@ -1,9 +1,9 @@
 import type { Route } from "./route.js";
 
 export type Application = {
-	routes: () => Route[];
+  routes: () => Route[];
 };
 
 export function createApplication(application: Application): Application {
-	return application;
+  return application;
 }
