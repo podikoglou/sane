@@ -1,8 +1,8 @@
-import { createController } from "../controller.js";
+import { createController } from "../../src/index.js";
 
 export default createController({
-	name: "home",
-	actions: {
-		index: () => {},
-	},
+  name: "home",
+  actions: {
+    index: () => { },
+  },
 });
