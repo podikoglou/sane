@@ -1,8 +1,12 @@
 import home from "./controllers/home.js";
-import { createApplication, get } from "../src/index.js";
+import { createApplication, createHandler, get } from "../src/index.js";
 
-export default createApplication({
+const application = createApplication({
   routes: () => {
     return [get("/", home.actions.index)];
   },
 });
+
+const handler = createHandler(application);
+
+Bun.serve({ fetch: handler, port: 3000 });
