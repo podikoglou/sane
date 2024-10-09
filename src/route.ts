@@ -1,27 +1,30 @@
 import type { Action } from "./action.js";
 
+export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
 export type Route = {
   path: string;
   action: Action;
+  method: Method;
 
   // figure out a way to infer this
   //controller: Controller
 };
 
-export type GetRoute = Route & { method: "GET" };
-
-export function get(path: string, action: Action): GetRoute {
-  return { path, action, method: "GET" };
+function createRouteMethod(
+  method: Method,
+): (path: string, action: Action) => Route {
+  return (path, action) => {
+    return {
+      path,
+      action,
+      method,
+    };
+  };
 }
 
-export type PostRoute = Route & { method: "POST" };
-
-export function post(path: string, action: Action): PostRoute {
-  return { path, action, method: "POST" };
-}
-
-export type PutRoute = Route & { method: "PUT" };
-
-export function put(path: string, action: Action): PutRoute {
-  return { path, action, method: "PUT" };
-}
+export const get = createRouteMethod("GET");
+export const post = createRouteMethod("POST");
+export const put = createRouteMethod("PUT");
+export const patch = createRouteMethod("PATCH");
+export const del = createRouteMethod("DELETE");
