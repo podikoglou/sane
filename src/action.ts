@@ -1,1 +1,1 @@
-export type Action = () => any;
+export type Action = (req: Request) => Response;
