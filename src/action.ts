@@ -1,1 +1,1 @@
-export type Action = (req: Request) => Response;
+export type Action = (req: Request) => Promise<Response> | Response;
