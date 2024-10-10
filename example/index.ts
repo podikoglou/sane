@@ -1,6 +1,7 @@
 import {
   createApplication,
   createHandler,
+  del,
   get,
   post,
   put,
@@ -20,8 +21,8 @@ const application = createApplication({
 
       post("/products", products.actions.create),
       put("/products/:id", products.actions.update),
-      // ????
-      // delete("/products/:id", products.actions.destroy),
+
+      del("/products/:id", products.actions.destroy),
     ];
   },
 });
