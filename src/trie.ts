@@ -1,22 +1,51 @@
-import type { Action } from "./action.js";
-import type { Method } from "./route.js";
+import type { Route } from "./route.js";
 
-export class RouteTrieNode {
+export interface TrieNode {
+	children: TrieNode[];
 	path: string;
-	method: Method;
-	action: Action;
 
-	children: RouteTrieNode[];
+	add(child: TrieNode): TrieNode;
+	find(query: string): TrieNode | undefined;
+}
 
-	constructor(path: string, method: Method, action: Action) {
-		this.children = [];
+export class EmptyTrieNode implements TrieNode {
+	children: TrieNode[] = [];
+	path: string;
 
+	constructor(path: string) {
 		this.path = path;
-		this.method = method;
-		this.action = action;
 	}
 
-	addChild(child: RouteTrieNode) {
+	add(child: TrieNode): TrieNode {
 		this.children.push(child);
+
+		return child;
+	}
+
+	find(query: string): TrieNode | undefined {
+		return this.children.find((child) => child.path === query);
+	}
+}
+
+export class RouteTrieNode implements TrieNode {
+	children: TrieNode[] = [];
+	value: Route;
+	path: string;
+
+	constructor(route: Route) {
+		this.value = route;
+
+		// this won't reactively updated
+		this.path = this.value.path;
+	}
+
+	add(child: TrieNode): TrieNode {
+		this.children.push(child);
+
+		return child;
+	}
+
+	find(query: string): TrieNode | undefined {
+		return this.children.find((child) => child.path === query);
 	}
 }
