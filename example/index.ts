@@ -10,8 +10,7 @@ import home from "./controllers/home.js";
 import products from "./controllers/products.js";
 
 const application = createApplication({
-  routes: () => {
-    return [
+  routes: () => [
       get("/", home.actions.index),
 
       get("/products", products.actions.index),

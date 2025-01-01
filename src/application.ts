@@ -8,7 +8,8 @@ export type Application = {
   handle: (req: Request) => Promise<Response>;
 };
 
-export function createApplication(routes: Route[]): Application {
+export function createApplication(config: { routes: () => Route[] }): Application {
+  const routes = config.routes();
   const trie = new Trie();
   
   // Insert all routes into the trie
