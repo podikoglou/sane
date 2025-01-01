@@ -1,42 +1,38 @@
 import type { Application } from "./application.js";
-import { type Method } from "./route.js";
-import { EmptyTrieNode, RouteTrieNode } from "./trie.js";
+import type { Method } from "./route.js";
+import { extractParams } from "./route.js";
 
 export type RequestHandler = (req: Request) => Promise<Response>;
 
 export function createHandler(application: Application): RequestHandler {
-	// TODO: check for duplicates
-	const routes = application.routes();
+  return async (req) => {
+    const method = req.method as Method;
+    const { pathname } = new URL(req.url);
 
-	const trieRoot = new EmptyTrieNode("/");
+    // Find matching route
+    const route = application.trie.search(pathname);
 
-	for (const route of application.routes()) {
-		let current = trieRoot;
+    if (!route) {
+      return new Response("Not Found", { status: 404 });
+    }
 
-		// split url into segments
-		const segments = route.path.split("/");
-		segments.pop(); // ignore the last one
+    // Check method matches
+    if (route.method !== method) {
+      return new Response("Method Not Allowed", { status: 405 });
+    }
 
-		for (const segment of segments) {
-			// if the node already exists, don't create it
-			if (current.find(segment)) {
-				current = current.find(segment)!;
-			} else {
-				current = current.add(new EmptyTrieNode(segment));
-			}
-		}
+    // Extract params if any
+    const params = extractParams(route.path, pathname);
+    if (Object.keys(params).length > 0) {
+      (req as any).params = params;
+    }
 
-		current.add(new RouteTrieNode(route));
-	}
-
-	return async (req) => {
-		const method: Method = req.method;
-		const { pathname: path } = new URL(req.url);
-
-		const availableRoutes = routes[method];
-
-		// TODO: matching logic
-
-		return new Response();
-	};
+    try {
+      // Execute route action
+      return await route.action(req);
+    } catch (error) {
+      console.error("Error handling request:", error);
+      return new Response("Internal Server Error", { status: 500 });
+    }
+  };
 }
