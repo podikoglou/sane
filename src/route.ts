@@ -3,24 +3,24 @@ import type { Action } from "./action.js";
 export type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export type Route = {
-  path: string;
-  action: Action;
-  method: Method;
+	path: string;
+	action: Action;
+	method: Method;
 
-  // figure out a way to infer this
-  //controller: Controller
+	// figure out a way to infer this
+	//controller: Controller
 };
 
 function createRouteMethod(
-  method: Method,
+	method: Method,
 ): (path: string, action: Action) => Route {
-  return (path, action) => {
-    return {
-      path,
-      action,
-      method,
-    };
-  };
+	return (path, action) => {
+		return {
+			path,
+			action,
+			method,
+		};
+	};
 }
 
 export const get = createRouteMethod("GET");
@@ -28,3 +28,6 @@ export const post = createRouteMethod("POST");
 export const put = createRouteMethod("PUT");
 export const patch = createRouteMethod("PATCH");
 export const del = createRouteMethod("DELETE");
+
+export const createErrorRoute = (error: string) =>
+	get("/", () => new Response(error));

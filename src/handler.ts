@@ -1,40 +1,44 @@
-import type { Action } from "./action.js";
 import type { Application } from "./application.js";
-import type { Method, Route } from "./route.js";
-import { RouteTrieNode } from "./trie.js";
+import { type Method, } from "./route.js";
+import { EmptyTrieNode, RouteTrieNode } from "./trie.js";
 
 export type RequestHandler = (req: Request) => Promise<Response>;
 
 export function createHandler(application: Application): RequestHandler {
-	// TODO: check for duplicates
+  // TODO: check for duplicates
+  const routes = application.routes();
 
-	const routes = application.routes();
+  const trieRoot = new EmptyTrieNode("/");
 
-	const rootRoute: Route = routes.filter(
-		(route) => route.method === "GET" && route.path === "/",
-	)[0] || { path: "/", method: "GET", action: () => new Response() };
+  for (const route of application.routes()) {
+    let current = trieRoot;
 
-	const routesTree = new RouteTrieNode(
-		rootRoute.path,
-		rootRoute.method,
-		rootRoute.action,
-	);
+    // split url into segments
+    const segments = route.path.split("/");
+    segments.pop(); // ignore the last one
 
-	for (const route of application.routes()) {
-		let split = route.path.split("/");
-		let current = routesTree;
+    for (const segment of segments) {
+      // if the node already exists, don't create it
+      if (current.find(segment)) {
+        current = current.find(segment)!;
+      } else {
+        current = current.add(new EmptyTrieNode(segment));
+      }
 
-		// traverse until we find out place and add it
-	}
+      console.log({ path: current });
+    }
 
-	return async (req) => {
-		const { method }: { method: Method } = req;
-		const { pathname: path } = new URL(req.url);
+    current.add(new RouteTrieNode(route));
+  }
 
-		const availableRoutes = routes[method];
+  return async (req) => {
+    const method: Method = req.method;
+    const { pathname: path } = new URL(req.url);
 
-		// TODO: matching logic
+    const availableRoutes = routes[method];
 
-		return new Response();
-	};
+    // TODO: matching logic
+
+    return new Response();
+  };
 }
